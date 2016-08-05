@@ -1,0 +1,12 @@
+{{extend 'layout.html'}}
+<h1>My Recipes</h1>
+
+{{for image in images:}}
+{{if image.Created_by-auth.user_id == 0:}}
+    <div style="width:31%; display:inline-block; padding:2%; text-align:center; font-size:1.5em ">
+    <img width="170px" height="170px" src="{{=URL('download',args=image.File)}}"/>
+        <br/>
+    {{=(A(image.Title,_href=URL("show",args=image.id)))}}
+    </div>
+{{pass}}
+{{pass}}

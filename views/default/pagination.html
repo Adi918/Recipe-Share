@@ -1,0 +1,36 @@
+{{extend 'layout.html'}}
+<h1>Current Images</h1>
+
+<!--<ul>
+{{for image in images:}}
+{{=LI(A(image.title, _href=URL("show", args=image.id)))}}
+{{pass}}
+</ul>--!>
+
+
+<script type="text/javascript">
+var x = 1;
+var y = 3;
+	function inc(){
+		x=x+2;
+		y=y+2;
+	}
+</script>
+
+{{x=1}}
+{{y=3}}
+
+<div id="table">
+<ul>
+{{for i in xrange(x,y):}}
+{{=LI(A(images[i].title, _href=URL("show", args=images[i].id)))}}
+{{pass}}
+</ul>
+</div>
+
+<button type="button"
+	onclick="inc()">
+Next</button>
+
+
+

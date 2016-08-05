@@ -1,0 +1,16 @@
+{{extend 'layout.html'}}
+<div style="font-size:150%;">
+{{=form}}
+</div>
+{{if people:}}
+<h3>Posts</h3>
+   {{for user in people:}}
+        {{image_userid = db(db.auth_user.id == user.Created_by).select()}}
+    <div style="width:80%; padding-left:3%">
+        <img width="170px" border-radius="170px" src="{{=URL('download',args=user.File)}}"/>
+        <div style="display:inline-block; margin-left:2%; padding:0;"><div style="font-size:200%; margin-top:1%">
+            {{=A(user.Title, _href=URL('show',argss=user.id))}}<br>
+            </div></div></div>
+    <br>
+   {{pass}}
+{{pass}}

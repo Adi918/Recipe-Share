@@ -1,0 +1,21 @@
+(dp1
+S'output'
+p2
+S"<type 'exceptions.AttributeError'> 'Query' object has no attribute 'type'"
+p3
+sS'layer'
+p4
+S'/run/media/user/Sandisk/ITWS/web2py/applications/images/controllers/default.py'
+p5
+sS'code'
+p6
+S"@auth.requires_login()\ndef index():\n\timages = db().select(db.image.ALL, orderby=db.image.id)\n\treturn dict(images=images)\n\ndef recipes():\n\timages = db().select(db.image.id==10,orderby=db.image.id)\n\treturn dict(images=images)\n\ndef show():\n\timage = db.image(request.args(0,cast=int)) or redirect(URL('index'))\n\tdb.post.image_id.default = image.id\n\tform = SQLFORM(db.post)\n\tif form.process().accepted:\n\t\tresponse.flash = 'your comment is posted'\n\tcomments = db(db.post.image_id==image.id).select()\n\treturn dict(image=image, comments=comments, form=form)\n\ndef download():\n\treturn response.download(request,db)\n\ndef user():\n\treturn dict(form=auth())\n\ndef manage():\n\tgrid = SQLFORM.smartgrid(db.image,linked_tables=['post'])\n\treturn dict(grid=grid)\n\n\nresponse._vars=response._caller(recipes)\n"
+p7
+sS'snapshot'
+p8
+(dp9
+sS'traceback'
+p10
+S'Traceback (most recent call last):\n  File "/run/media/user/Sandisk/ITWS/web2py/gluon/restricted.py", line 227, in restricted\n    exec ccode in environment\n  File "/run/media/user/Sandisk/ITWS/web2py/applications/images/controllers/default.py", line 30, in <module>\n  File "/run/media/user/Sandisk/ITWS/web2py/gluon/globals.py", line 412, in <lambda>\n    self._caller = lambda f: f()\n  File "/run/media/user/Sandisk/ITWS/web2py/applications/images/controllers/default.py", line 7, in recipes\n    images = db().select(db.image.id==10,orderby=db.image.id)\n  File "/run/media/user/Sandisk/ITWS/web2py/gluon/packages/dal/pydal/objects.py", line 2025, in select\n    return adapter.select(self.query,fields,attributes)\n  File "/run/media/user/Sandisk/ITWS/web2py/gluon/packages/dal/pydal/adapters/sqlite.py", line 124, in select\n    return super(SQLiteAdapter, self).select(query, fields, attributes)\n  File "/run/media/user/Sandisk/ITWS/web2py/gluon/packages/dal/pydal/adapters/base.py", line 1280, in select\n    sql = self._select(query, fields, attributes)\n  File "/run/media/user/Sandisk/ITWS/web2py/gluon/packages/dal/pydal/adapters/base.py", line 1109, in _select\n    sql_f = \', \'.join(map(geoexpand, fields))\n  File "/run/media/user/Sandisk/ITWS/web2py/gluon/packages/dal/pydal/adapters/base.py", line 1106, in geoexpand\n    if isinstance(field.type,str) and field.type.startswith(\'geo\') and isinstance(field, Field):\nAttributeError: \'Query\' object has no attribute \'type\'\n'
+p11
+s.

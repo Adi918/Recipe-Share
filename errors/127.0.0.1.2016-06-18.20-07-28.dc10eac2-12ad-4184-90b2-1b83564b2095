@@ -1,0 +1,21 @@
+(dp1
+S'output'
+p2
+S"<type 'exceptions.AttributeError'> 'DAL' object has no attribute 'images'"
+p3
+sS'layer'
+p4
+S'/home/aditya/web2py/applications/Recipes/controllers/default.py'
+p5
+sS'code'
+p6
+S'@auth.requires_login()\ndef index():\n\tif len(request.args):\n\t\tpage=int(request.args[0])\n\telse: \n\t\tpage=0\n\titems_per_page=6\n\tlimitby=(page*items_per_page,(page+1)*items_per_page+1)\n\trows=db(db.image).select(db.image.ALL,limitby=limitby,orderby=~db.image.id)\n\treturn dict(rows=rows,page=page,items_per_page=items_per_page)\n@auth.requires_login()\ndef recipes():\n    images = db().select(db.image.ALL,orderby=~db.image.id)\n    return dict(images=images)\n\n@auth.requires_login()\ndef upload():\n\tform = SQLFORM(db.image)\n\tif form.process().accepted:\n\t\tresponse.flash = \'Recipe accepted\'\n\telif form.errors:\n\t\tresponse.flash = \'Form has errors\'\n\telse:\n\t\tresponse.flash = \'Please fill out the form\'\n\treturn dict(form=form)\n\n\n@auth.requires_login()\ndef show():\n    temp = db(auth.user.id == db.auth_user.id).select()\n    image = db.image(request.args(0,cast=int)) or redirect(URL(\'index\'))\n    db.post.Image_id.default = image.id\n    form = SQLFORM(db.post)\n    form.vars.Author = temp[0][\'first_name\']\n    form.vars.EMail = temp[0][\'email\']\n    if form.process().accepted:\n        response.flash = \'Your comment has been posted\'\n    comments = db(db.post.Image_id==image.id).select()\n    return dict(image=image, comments=comments, form=form, temp=temp)\n\ndef download():\n\treturn response.download(request,db)\n\ndef user():\n\treturn dict(form=auth())\n\n@auth.requires_login()\ndef manage():\n    form = SQLFORM.factory(Field(\'name\',requires=IS_NOT_EMPTY()))\n    if form.accepts(request):\n        tokens = form.vars.name.split()\n        query = reduce(lambda a,b:a&b,\n                       [db.images.Title.contains(k) \\\n                            for k in tokens])\n        people = db(query).select(db.image.ALL)\n    else:\n        people = []\n    return locals()\n\n@auth.requires_login()\ndef edit():\n\trow=db.image(request.args(0,cast=int))\n\tform=SQLFORM(db.image,row)\n\tform.process(detect_record_change=True)\n\tx=row.Created_by\n\tif x!=auth.user.id:\n\t\treturn dict(form="Not Authorised")\n\tif form.accepted:\n\t\trow.update()\n\t\tresponse.flash = \'Recipe Updated\'\n\t\tredirect(URL(\'show\', args=row.id))\n\telif form.errors:\n\t\tresponse.flash = \'Fill The Form Correctly\'\n\telse:\n\t\tresponse.flash = \'Edit The Form as Per Your Choice\'\n\treturn dict(form=form)\n\n@auth.requires_login()\ndef like():\n\tfrom re import match\n\trecid=request.args[0]\n\tlike_str=str(db(db.image.id==request.args[0]).select(db.image.likes))\n\tlike_list=[x for x in like_str.split() if match(\'^[0-9]*$\',x)]\n\tif str(auth.user.id) not in like_list:\n\t\t\tlike_list.append(str(auth.user.id))\n\t\t\tdb(db.image.id==request.args[0]).update(likes=(\' \').join(like_list))\n\treturn dict(l=like_list,recid=recid)\n\nresponse._vars=response._caller(manage)\n'
+p7
+sS'snapshot'
+p8
+(dp9
+sS'traceback'
+p10
+S'Traceback (most recent call last):\n  File "/home/aditya/web2py/gluon/restricted.py", line 227, in restricted\n    exec ccode in environment\n  File "/home/aditya/web2py/applications/Recipes/controllers/default.py", line 89, in <module>\n  File "/home/aditya/web2py/gluon/globals.py", line 412, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/aditya/web2py/gluon/tools.py", line 4236, in f\n    return action(*a, **b)\n  File "/home/aditya/web2py/applications/Recipes/controllers/default.py", line 54, in manage\n    for k in tokens])\n  File "/home/aditya/web2py/gluon/packages/dal/pydal/base.py", line 921, in __getattr__\n    return BasicStorage.__getattribute__(self, key)\nAttributeError: \'DAL\' object has no attribute \'images\'\n'
+p11
+s.

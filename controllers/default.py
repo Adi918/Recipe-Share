@@ -1,0 +1,87 @@
+@auth.requires_login()
+def index():
+	if len(request.args):
+		page=int(request.args[0])
+	else: 
+		page=0
+	items_per_page=6
+	limitby=(page*items_per_page,(page+1)*items_per_page+1)
+	rows=db(db.image).select(db.image.ALL,limitby=limitby,orderby=~db.image.id)
+	return dict(rows=rows,page=page,items_per_page=items_per_page)
+@auth.requires_login()
+def recipes():
+    images = db().select(db.image.ALL,orderby=~db.image.id)
+    return dict(images=images)
+
+@auth.requires_login()
+def upload():
+	form = SQLFORM(db.image)
+	if form.process().accepted:
+		response.flash = 'Recipe accepted'
+	elif form.errors:
+		response.flash = 'Form has errors'
+	else:
+		response.flash = 'Please fill out the form'
+	return dict(form=form)
+
+
+@auth.requires_login()
+def show():
+    temp = db(auth.user.id == db.auth_user.id).select()
+    image = db.image(request.args(0,cast=int)) or redirect(URL('index'))
+    db.post.Image_id.default = image.id
+    form = SQLFORM(db.post)
+    form.vars.Author = temp[0]['first_name']
+    form.vars.EMail = temp[0]['email']
+    if form.process().accepted:
+        response.flash = 'Your comment has been posted'
+    comments = db(db.post.Image_id==image.id).select()
+    return dict(image=image, comments=comments, form=form, temp=temp)
+
+def download():
+	return response.download(request,db)
+
+def user():
+	return dict(form=auth())
+
+@auth.requires_login()
+def manage():
+    form = SQLFORM.factory(Field('name',requires=IS_NOT_EMPTY()))
+    if form.accepts(request):
+        tokens = form.vars.name.split()
+        query = reduce(lambda a,b:a&b,
+                       [db.image.Title.contains(k) \
+                            for k in tokens])
+        people = db(query).select()
+    else:
+        people = []
+    return locals()
+
+@auth.requires_login()
+def edit():
+	row=db.image(request.args(0,cast=int))
+	form=SQLFORM(db.image,row)
+	form.process(detect_record_change=True)
+	x=row.Created_by
+	if x!=auth.user.id:
+		return dict(form="Not Authorised")
+	if form.accepted:
+		row.update()
+		response.flash = 'Recipe Updated'
+		redirect(URL('show', args=row.id))
+	elif form.errors:
+		response.flash = 'Fill The Form Correctly'
+	else:
+		response.flash = 'Edit The Form as Per Your Choice'
+	return dict(form=form)
+
+@auth.requires_login()
+def like():
+	from re import match
+	recid=request.args[0]
+	like_str=str(db(db.image.id==request.args[0]).select(db.image.likes))
+	like_list=[x for x in like_str.split() if match('^[0-9]*$',x)]
+	if str(auth.user.id) not in like_list:
+			like_list.append(str(auth.user.id))
+			db(db.image.id==request.args[0]).update(likes=(' ').join(like_list))
+	return dict(l=like_list,recid=recid)

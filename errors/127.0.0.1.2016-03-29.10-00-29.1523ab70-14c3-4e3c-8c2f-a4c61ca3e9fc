@@ -1,0 +1,21 @@
+(dp1
+S'output'
+p2
+S"<type 'exceptions.NameError'> global name 'limitby' is not defined"
+p3
+sS'layer'
+p4
+S'/home/hp/Deva/web2py/applications/images/controllers/default.py'
+p5
+sS'code'
+p6
+S"@auth.requires_login()\ndef index():\n\tif len(request.args):\n\t\tpage=int(request.args[0])\n\telse: \n\t\tpage=0\n\titems_per_page=1\n\tlimitby=(page*items_per_page,(page+1)*items_per_page+1)\n\trows=db(db.image).select(db.image.ALL,limitby=limitby,orderby=~db.image.id)\n\treturn dict(rows=rows,page=page,items_per_page=items_per_page)\n@auth.requires_login()\ndef recipes():\n    images = db().select(db.image.ALL,limitby=limitby,orderby=~db.image.id)\n    return dict(images=images)\n\n@auth.requires_login()\ndef upload():\n\tform = SQLFORM(db.image)\n\tif form.process().accepted:\n\t\tresponse.flash = 'Recipe accepted'\n\telif form.errors:\n\t\tresponse.flash = 'Form has errors'\n\telse:\n\t\tresponse.flash = 'Please fill out the form'\n\treturn dict(form=form)\n\n\ndef show():\n\timage = db.image(request.args(0,cast=int)) or redirect(URL('index'))\n\tdb.post.Image_id.default = image.id\n\tform = SQLFORM(db.post)\n\tif form.process().accepted:\n\t\tresponse.flash = 'Your comment has been posted'\n\tcomments = db(db.post.Image_id==image.id).select()\n\treturn dict(image=image, comments=comments, form=form)\n\ndef download():\n\treturn response.download(request,db)\n\ndef user():\n\treturn dict(form=auth())\n\ndef manage():\n\tgrid = SQLFORM.smartgrid(db.image,linked_tables=['post'],csv=False)\n\treturn dict(grid=grid)\n\nresponse._vars=response._caller(recipes)\n"
+p7
+sS'snapshot'
+p8
+(dp9
+sS'traceback'
+p10
+S'Traceback (most recent call last):\n  File "/home/hp/Deva/web2py/gluon/restricted.py", line 227, in restricted\n    exec ccode in environment\n  File "/home/hp/Deva/web2py/applications/images/controllers/default.py", line 47, in <module>\n  File "/home/hp/Deva/web2py/gluon/globals.py", line 412, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/hp/Deva/web2py/gluon/tools.py", line 4236, in f\n    return action(*a, **b)\n  File "/home/hp/Deva/web2py/applications/images/controllers/default.py", line 13, in recipes\n    images = db().select(db.image.ALL,limitby=limitby,orderby=~db.image.id)\nNameError: global name \'limitby\' is not defined\n'
+p11
+s.

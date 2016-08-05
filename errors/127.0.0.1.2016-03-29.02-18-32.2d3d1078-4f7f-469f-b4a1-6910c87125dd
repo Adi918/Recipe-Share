@@ -1,0 +1,21 @@
+(dp1
+S'output'
+p2
+S"<type 'exceptions.TypeError'> long() argument must be a string or a number, not 'Table'"
+p3
+sS'layer'
+p4
+S'/home/hp/Deva/web2py/applications/images/controllers/default.py'
+p5
+sS'code'
+p6
+S"@auth.requires_login()\ndef index():\n\tif len(request.args):\n\t\tpage=int(request.args[0])\n\telse: \n\t\tpage=0\n\titems_per_page=10\n\tlimitby=(page*items_per_page,(page+1)*items_per_page+1)\n\trows=db(db.image).select(db.image.ALL,limitby=limitby)\n\treturn dict(rows=rows,page=page,items_per_page=items_per_page)\n@auth.requires_login()\ndef recipes():\n\timages = db().select(db.image.ALL,orderby=db.image.id)\n\treturn dict(images=images)\n@auth.requires_login()\ndef upload():\n\tform = SQLFORM(db.image)\n\tif form.process().accepted:\n\t\tresponse.flash = 'Recipe accepted'\n\telif form.errors:\n\t\tresponse.flash = 'Form has errors'\n\telse:\n\t\tresponse.flash = 'Please fill out the form'\n\treturn dict(form=form)\n\n\ndef show():\n\timage = db.image(request.args(0,cast=int)) or redirect(URL('index'))\n\tdb.post.Image_id.default = image.id\n\tform = SQLFORM(db.post)\n\tif form.process().accepted:\n\t\tresponse.flash = 'Your comment has been posted'\n\tcomments = db(db.post.Image_id==image.id).select()\n\treturn dict(image=image, comments=comments, form=form)\n\ndef download():\n\treturn response.download(request,db)\n\ndef user():\n\treturn dict(form=auth())\n\ndef manage():\n\tgrid = SQLFORM.smartgrid(db.image,linked_tables=['post'])\n\treturn dict(grid=grid)\n\nresponse._vars=response._caller(upload)\n"
+p7
+sS'snapshot'
+p8
+(dp9
+sS'traceback'
+p10
+S'Traceback (most recent call last):\n  File "/home/hp/Deva/web2py/gluon/restricted.py", line 227, in restricted\n    exec ccode in environment\n  File "/home/hp/Deva/web2py/applications/images/controllers/default.py", line 46, in <module>\n  File "/home/hp/Deva/web2py/gluon/globals.py", line 412, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/hp/Deva/web2py/gluon/tools.py", line 4236, in f\n    return action(*a, **b)\n  File "/home/hp/Deva/web2py/applications/images/controllers/default.py", line 18, in upload\n    if form.process().accepted:\n  File "/home/hp/Deva/web2py/gluon/html.py", line 2304, in process\n    self.validate(**kwargs)\n  File "/home/hp/Deva/web2py/gluon/html.py", line 2241, in validate\n    if self.accepts(**kwargs):\n  File "/home/hp/Deva/web2py/gluon/sqlhtml.py", line 1722, in accepts\n    self.vars.id = self.table.insert(**fields)\n  File "/home/hp/Deva/web2py/gluon/packages/dal/pydal/objects.py", line 731, in insert\n    ret = self._db._adapter.insert(self, self._listify(fields))\n  File "/home/hp/Deva/web2py/gluon/packages/dal/pydal/adapters/base.py", line 739, in insert\n    query = self._insert(table,fields)\n  File "/home/hp/Deva/web2py/gluon/packages/dal/pydal/adapters/base.py", line 730, in _insert\n    values = \',\'.join(self.expand(v, f.type) for f, v in fields)\n  File "/home/hp/Deva/web2py/gluon/packages/dal/pydal/adapters/base.py", line 730, in <genexpr>\n    values = \',\'.join(self.expand(v, f.type) for f, v in fields)\n  File "/home/hp/Deva/web2py/gluon/packages/dal/pydal/adapters/base.py", line 962, in expand\n    rv = self.represent(expression, field_type)\n  File "/home/hp/Deva/web2py/gluon/packages/dal/pydal/adapters/base.py", line 1439, in represent\n    return str(long(obj))\nTypeError: long() argument must be a string or a number, not \'Table\'\n'
+p11
+s.
